@@ -20,7 +20,7 @@ public class Tokenizer {
 	}
 
 	//Christine
-	private List<String> normalize(List<String> tokens) {
+	private List<String> stopword(List<String> tokens) {
 		return null;
 	}
 }
