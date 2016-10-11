@@ -1,8 +1,11 @@
 package getarticle;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Scanner;
 import java.util.Set;
+import java.util.jar.JarFile;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
@@ -36,26 +39,32 @@ public class GetArticlesMapred {
 	//@formatter:on
 	public static class GetArticlesMapper extends Mapper<LongWritable, WikipediaPage, Text, Text> {
 		public static Set<String> peopleArticlesTitles = new HashSet<String>();
-		// go through the titles and see if the people names match in the SETUP
-		// save the titles in the SET
-		// then in the mapper look for the titles and write it to output???
+		public static String people = "people.txt";
 
 		@Override
 		protected void setup(Mapper<LongWritable, WikipediaPage, Text, Text>.Context context)
 				throws IOException, InterruptedException {
-			// TODO: You should implement people articles load from DistributedCache here
+			// Populate set with people.txt names
+			ClassLoader cl = GetArticlesMapred.class.getClassLoader();
+			String fileURL = cl.getResource(people).getFile();
+			String jarURL = fileURL.substring(5, fileURL.length() - people.length() - 2);
+			JarFile jf = new JarFile(new File(jarURL));
+			Scanner sc = new Scanner(jf.getInputStream(jf.getEntry(people)));
+			while (sc.hasNextLine()) {
+				peopleArticlesTitles.add(sc.nextLine());
+			}
+			jf.close();
+			sc.close();
 			super.setup(context);
 		}
 
 		@Override
 		public void map(LongWritable offset, WikipediaPage inputPage, Context context)
 				throws IOException, InterruptedException {
-			// i just wrote this to test 
-			// also tested if inputPage is null or empty; is NOT null or empty
-			String title = "Autonomous communities of Spain";
-			System.out.println(title); // prints
-			System.out.println(inputPage.getContent()); // does not print (string out of bounds exception)
-			// TODO: You should implement getting article mapper here
+			// check if title is a person name
+			if (peopleArticlesTitles.contains(inputPage.getTitle())) {
+				context.write(new Text(""), new Text(inputPage.getContent()));
+			}
 		}
 	}
 
@@ -70,7 +79,6 @@ public class GetArticlesMapred {
 		Job job = Job.getInstance(conf, "get articles");
 		// we have a custom input format
 		job.setInputFormatClass(WikipediaPageInputFormat.class);
-		
         job.setJarByClass(GetArticlesMapred.class);
         job.setMapperClass(GetArticlesMapper.class);
         job.setOutputKeyClass(Text.class);
