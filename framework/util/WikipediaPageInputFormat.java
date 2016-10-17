@@ -55,7 +55,7 @@ public class WikipediaPageInputFormat extends IndexableFileInputFormat<LongWrita
 
 		/**
 		 * Creates a <code>WikipediaPageRecordReader</code>.
-		 * 
+		 *
 		 * @throws InterruptedException
 		 */
 		public WikipediaPageRecordReader(Configuration conf) throws IOException,
@@ -75,6 +75,7 @@ public class WikipediaPageInputFormat extends IndexableFileInputFormat<LongWrita
 		 * Creates an object for the value.
 		 */
 		public WikipediaPage createValue() {
+			//TODO: Christine please update changes you've made in WikipediaPageInputFormat.
 			return new WikipediaPage();
 		}
 
@@ -123,7 +124,7 @@ public class WikipediaPageInputFormat extends IndexableFileInputFormat<LongWrita
 				return false;
 			offset = reader.getCurrentKey();
 			text = reader.getCurrentValue();
-			
+
 			if (key == null) {
 				key = new LongWritable();
 			}
