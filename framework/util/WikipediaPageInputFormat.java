@@ -27,6 +27,7 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext;
 
 import util.XMLInputFormat.XMLRecordReader;
 import edu.umd.cloud9.collection.wikipedia.WikipediaPage;
+import edu.umd.cloud9.collection.wikipedia.language.EnglishWikipediaPage;
 
 /**
  * To replace WikipediaPageInputFormat from cloud9 to work with hadoop 2.0
@@ -55,7 +56,7 @@ public class WikipediaPageInputFormat extends IndexableFileInputFormat<LongWrita
 
 		/**
 		 * Creates a <code>WikipediaPageRecordReader</code>.
-		 *
+		 * 
 		 * @throws InterruptedException
 		 */
 		public WikipediaPageRecordReader(Configuration conf) throws IOException,
@@ -75,8 +76,7 @@ public class WikipediaPageInputFormat extends IndexableFileInputFormat<LongWrita
 		 * Creates an object for the value.
 		 */
 		public WikipediaPage createValue() {
-			//TODO: Christine please update changes you've made in WikipediaPageInputFormat.
-			return new WikipediaPage();
+			return new EnglishWikipediaPage();
 		}
 
 		/**
@@ -124,12 +124,12 @@ public class WikipediaPageInputFormat extends IndexableFileInputFormat<LongWrita
 				return false;
 			offset = reader.getCurrentKey();
 			text = reader.getCurrentValue();
-
+			
 			if (key == null) {
 				key = new LongWritable();
 			}
 			if (value == null) {
-				value = new WikipediaPage();
+				value = new EnglishWikipediaPage();
 			}
 			key.set(offset.get());
 			WikipediaPage.readPage(value, text.toString());
