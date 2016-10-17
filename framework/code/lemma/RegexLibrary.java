@@ -1,75 +1,38 @@
 package tokenizer;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Tokenizer {
+public class RegexLibrary {
 
-	private static final RegexLibrary regexLibrary = new RegexLibrary();
-	private static final String DELIMITER = " \t\n\r\f:;?![]'<>|.,{}=~!@#$^&*_+\\/()“”";
+	private static Map<Pattern, Integer> referencePatterns = new HashMap<>();
 
-	public Tokenizer() {
-		// TODO Auto-generated constructor stub
+	private static final String LINK = "(&lt;ref name=)(.*?)(\\{\\{cite web|url=)(.*?)(\\}\\}&lt;/ref&gt;)";
+	private static final String REF = "&lt;ref name=(.*?)/&gt;";
+	private static final String QUOTE = "&quot;"; // (.*?) match once or none.
+	private static final String GENERAL_REF = "&lt;ref&gt;(.*?)lt;/ref&gt;";
+	private static final String FILE = "\\[\\[File:(.*?)\\|(.*?)\\]\\]";
+	private static final String INTERNAL_LINK = "\\[\\[(.*?)\\|(.*?)\\]\\]";
+	private static final String INTERNAL_LINK2 = "\\{\\{(.*?)\\|(.*?)\\}\\}";
+	private static final String BLOCK_QUOTE = "&lt;blockquote&gt;(.*?)&lt;/blockquote&gt;";
+
+
+	public RegexLibrary(){
+
+		referencePatterns.put(Pattern.compile(LINK), -1);
+		referencePatterns.put(Pattern.compile(QUOTE), -1);
+		referencePatterns.put(Pattern.compile(GENERAL_REF), -1);
+		referencePatterns.put(Pattern.compile(FILE), -1);
+		//referencePatterns.put(Pattern.compile(INTERNAL_LINK), 2); //TODO:COMPATIBILITY ISSUE with other regex, needs fix
+		referencePatterns.put(Pattern.compile(INTERNAL_LINK2), 2);
+		referencePatterns.put(Pattern.compile(BLOCK_QUOTE), 1);
+		referencePatterns.put(Pattern.compile(REF), -1);
+
 	}
 
-	//James
-	public List<String> tokenize(String sentence) {
-		System.out.println(sentence);
-		sentence = removeReference(sentence);
-		System.out.println(sentence);
-
-		StringTokenizer tokenizer = new StringTokenizer(sentence, DELIMITER);//Deals with bold, italics, and styles.
-		List<String> output = new LinkedList<>();
-
-		while(tokenizer.hasMoreTokens()){
-			output.add(tokenizer.nextToken());
-		}
-		System.out.println(output);
-		return output;
+	public Map<Pattern, Integer> getReferencePatterns(){
+		return referencePatterns;
 	}
 
-	/**
-	 * Remove parts of sentence with predefined patterns
-	 * @param sentence
-	 * @param regexList
-	 * @return
-	 */
-	private String removeWithPattern(String sentence, Map<Pattern, Integer> regexMap){
-		Set<Pattern> patterns = regexMap.keySet();
-		for(Pattern p: patterns){
-			Matcher m = p.matcher(sentence);
-			int group = regexMap.get(p);
-			if(group != -1){
-				sentence = m.replaceAll("$"+group);
-			}else{
-				sentence = m.replaceAll(" ");
-			}
-		}
-		return sentence;
-	}
-
-	/**
-	 * removes all references (citations, links, etc) from input
-	 * @param sentence
-	 * @return
-	 */
-	private String removeReference(String sentence){
-		Map<Pattern, Integer> regexMap = regexLibrary.getReferencePatterns();
-		return removeWithPattern(sentence, regexMap);
-	}
-
-	//Ben
-	private List<String> lemmatize(List<String> tokens) {
-		return null;
-	}
-
-	//Christine
-	private List<String> stopword(List<String> tokens) {
-		return null;
-	}
 }
