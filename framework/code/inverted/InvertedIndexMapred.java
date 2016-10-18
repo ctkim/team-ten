@@ -15,6 +15,7 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.input.KeyValueTextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
@@ -97,6 +98,8 @@ public class InvertedIndexMapred extends Configured implements Tool{
 			job.setOutputKeyClass(Text.class);
 			job.setOutputValueClass(StringInteger.class);
 
+			job.setInputFormatClass(KeyValueTextInputFormat.class);
+
 			FileInputFormat.setInputPaths(job, new Path(OUTPUT_PATH));
 			FileOutputFormat.setOutputPath(job, new Path(args[1]));
 
@@ -112,6 +115,4 @@ public class InvertedIndexMapred extends Configured implements Tool{
 			}
 			ToolRunner.run(new Configuration(), new InvertedIndexMapred(), args);
 		}
-
-
 }
