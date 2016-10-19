@@ -1,5 +1,7 @@
 package lemma;
 
+import java.io.FileNotFoundException;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -11,14 +13,14 @@ import java.util.regex.Pattern;
 public class Tokenizer {
 
 	private static final RegexLibrary regexLibrary = new RegexLibrary();
-	private static final String DELIMITER = " \t\n\r\f:;?![]'<>|.,{}=~!@#$^&*_+\\/()“”";
+	private static final String DELIMITER = " \t\n\r\f:;?![]'<>|.,{}=~!@#$^&*_+\\/()â€œâ€�";
 
 	public Tokenizer() {
 		// TODO Auto-generated constructor stub
 	}
 
 	//James
-	public List<String> tokenize(String sentence) {
+	public List<String> tokenize(String sentence) throws FileNotFoundException {
 		System.out.println(sentence);
 		sentence = removeReference(sentence);
 		System.out.println(sentence);
@@ -29,6 +31,9 @@ public class Tokenizer {
 		while(tokenizer.hasMoreTokens()){
 			output.add(tokenizer.nextToken());
 		}
+		System.out.println(output);
+		// stopword removal 
+		output = stopword(output);
 		System.out.println(output);
 		return output;
 	}
@@ -69,7 +74,15 @@ public class Tokenizer {
 	}
 
 	//Christine
-	private List<String> stopword(List<String> tokens) {
-		return null;
+	private List<String> stopword(List<String> tokens) throws FileNotFoundException {
+		StopWordLibrary lib = new StopWordLibrary();
+		HashSet<String> stopWords = lib.getStopWords();
+		List<String> noStopWords = new LinkedList<String>();
+		for (String s : tokens) {
+			if (!stopWords.contains(s)) {
+				noStopWords.add(s);
+			}
+		}
+		return noStopWords;
 	}
 }
