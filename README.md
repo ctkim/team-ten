@@ -1,7 +1,5 @@
 # team-ten
 
-
-
 ## Team Task Assignment
 
 Christine: Import and Process XML file, Stop Word Removal
