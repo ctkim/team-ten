@@ -9,11 +9,12 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import edu.stanford.nlp.simple.*;
 
 public class Tokenizer {
 
 	private static final RegexLibrary regexLibrary = new RegexLibrary();
-	private static final String DELIMITER = " \t\n\r\f:;?![]'<>|.,{}=~!@#$^&*_+\\/()â€œâ€�";
+	private static final String DELIMITER = " \t\n\r\f:;?![]'<>|.,{}=~!@#$^&*_+\\/()";
 
 	public Tokenizer() {
 		// TODO Auto-generated constructor stub
@@ -21,9 +22,9 @@ public class Tokenizer {
 
 	//James
 	public List<String> tokenize(String sentence) throws FileNotFoundException {
-		System.out.println(sentence);
+		//System.out.println(sentence);
 		sentence = removeReference(sentence);
-		System.out.println(sentence);
+		//System.out.println(sentence);
 
 		StringTokenizer tokenizer = new StringTokenizer(sentence, DELIMITER);//Deals with bold, italics, and styles.
 		List<String> output = new LinkedList<String>();
@@ -31,10 +32,11 @@ public class Tokenizer {
 		while(tokenizer.hasMoreTokens()){
 			output.add(tokenizer.nextToken());
 		}
-		System.out.println(output);
+		//System.out.println(output);
 		// stopword removal 
 		output = stopword(output);
-		System.out.println(output);
+		//System.out.println(output);
+		output = lemmatize(output);
 		return output;
 	}
 
@@ -70,7 +72,8 @@ public class Tokenizer {
 
 	//Ben
 	private List<String> lemmatize(List<String> tokens) {
-		return null;
+		Sentence sent = new Sentence(tokens);
+		return sent.lemmas();
 	}
 
 	//Christine
