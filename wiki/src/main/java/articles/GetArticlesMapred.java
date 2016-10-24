@@ -63,7 +63,7 @@ public class GetArticlesMapred {
 				throws IOException, InterruptedException {
 			// check if title is a person name
 			if (peopleArticlesTitles.contains(inputPage.getTitle())) {
-				context.write(new Text(""), new Text(inputPage.getContent()));
+				context.write(new Text(""), new Text(inputPage.getRawXML()));
 			}
 		}
 	}
